@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="https://p.trellocdn.com/power-up.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://p.trellocdn.com/power-up.min.js"></script>
+  <script src="shared.js"></script>
+</head>
+<body>
+<div id="content">
+  <div id="summary"></div>
+  <button id="open" style="margin-top:8px">Tijd registreren</button>
+</div>
+<script>
+(function () {
+  'use strict';
+  var t = TrelloPowerUp.iframe();
+  var names = {};
+
+  document.getElementById('open').addEventListener('click', function (ev) {
+    t.popup({ title: 'Tijdregistratie', url: './card.html', height: 480, mouseEvent: ev });
+  });
+
+  t.board('members').then(function (b) {
+    names = TT.memberMap(b.members);
+    t.render(function () {
+      return TT.load(t).then(function (d) {
+        var spent = TT.total(d, { includeRunning: true });
+        var html = '<div><b>' + TT.fmt(spent) + '</b> uur besteed';
+        if (d.b) {
+          var pct = Math.round(spent / d.b * 100);
+          var cls = pct > 100 ? 'red' : pct >= 80 ? 'yellow' : '';
+          html += ' van ' + TT.fmt(d.b) + ' begroot (' + pct + '%)</div>' +
+            '<div class="bar ' + cls + '"><span style="width:' + Math.min(100, pct) + '%"></span></div>';
+        } else html += '</div>';
+
+        var ids = {};
+        d.e.forEach(function (e) { ids[d.m[e[0]]] = 1; });
+        Object.keys(d.r).forEach(function (id) { ids[id] = 1; });
+        var chips = Object.keys(ids).map(function (id) {
+          var live = !!d.r[id];
+          return '<span class="chip' + (live ? ' live' : '') + '">' + (live ? '▶ ' : '') +
+            TT.escapeHtml(TT.firstName(names[id])) + ' ' + TT.fmt(TT.total(d, { memberId: id, includeRunning: true })) + '</span>';
+        });
+        if (chips.length) html += '<div class="chips" style="margin-top:6px">' + chips.join('') + '</div>';
+        document.getElementById('summary').innerHTML = html;
+        return t.sizeTo('#content');
+      });
+    });
+  });
+})();
+</script>
+</body>
+</html>

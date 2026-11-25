@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="https://p.trellocdn.com/power-up.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://p.trellocdn.com/power-up.min.js"></script>
+  <script src="shared.js"></script>
+</head>
+<body>
+<div id="content">
+  <h3>Uurtarief (excl. btw)</h3>
+  <div class="row">
+    <input id="rate" type="text" placeholder="bv. 85">
+    <button id="save" class="mod-primary">Opslaan</button>
+  </div>
+  <p class="muted">Wordt in het urenoverzicht gebruikt om uren om te rekenen naar een bedrag. Leeg laten = geen bedragen tonen.</p>
+</div>
+<script>
+(function () {
+  'use strict';
+  var t = TrelloPowerUp.iframe();
+  var input = document.getElementById('rate');
+
+  t.get('board', 'shared', TT.SETTINGS_KEY, {}).then(function (s) {
+    if (s && s.rate) input.value = String(s.rate).replace('.', ',');
+    t.sizeTo('#content');
+  });
+
+  document.getElementById('save').addEventListener('click', function () {
+    var raw = input.value.trim().replace(',', '.');
+    var rate = raw === '' ? null : parseFloat(raw);
+    if (raw !== '' && !(rate > 0)) { input.focus(); return; }
+    t.set('board', 'shared', TT.SETTINGS_KEY, { rate: rate }).then(function () { t.closePopup(); });
+  });
+})();
+</script>
+</body>
+</html>

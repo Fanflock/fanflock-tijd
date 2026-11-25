@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="https://p.trellocdn.com/power-up.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://p.trellocdn.com/power-up.min.js"></script>
+  <script src="shared.js"></script>
+</head>
+<body>
+<div class="report">
+  <div class="filters">
+    <label>Periode
+      <select id="period">
+        <option value="week">Deze week</option>
+        <option value="lastweek">Vorige week</option>
+        <option value="month" selected>Deze maand</option>
+        <option value="lastmonth">Vorige maand</option>
+        <option value="custom">Aangepast…</option>
+        <option value="all">Alles</option>
+      </select>
+    </label>
+    <label id="fromWrap" class="hidden">Van <input id="from" type="date"></label>
+    <label id="toWrap" class="hidden">t/m <input id="to" type="date"></label>
+    <label>Medewerker <select id="member"><option value="">Iedereen</option></select></label>
+    <label>Lijst <select id="list"><option value="">Alle lijsten</option></select></label>
+  </div>
+
+  <div id="loading" class="muted">Uren ophalen…</div>
+  <div id="out" class="hidden">
+    <div class="kpis" id="kpis"></div>
+
+    <div id="liveWrap" class="hidden">
+      <h3>Lopende timers</h3>
+      <table class="tt"><tbody id="live"></tbody></table>
+    </div>
+
+    <h3>Per kaart</h3>
+    <table class="tt">
+      <thead><tr><th>Kaart</th><th>Lijst</th><th class="num">Periode</th><th class="num">Totaal</th><th class="num">Budget</th><th class="num">%</th><th class="num" data-money>Bedrag (periode)</th></tr></thead>
+      <tbody id="byCard"></tbody>
+    </table>
+
+    <h3>Per medewerker</h3>
+    <table class="tt">
+      <thead><tr><th>Naam</th><th class="num">Uren</th><th class="num" data-money>Bedrag</th></tr></thead>
+      <tbody id="byMember"></tbody>
+    </table>
+
+    <h3>Alle regels</h3>
+    <div class="actions">
+      <button id="copy" class="mod-primary">Kopieer voor Google Sheets</button>
+      <button id="csv">Download CSV</button>
+      <span id="copied" class="muted hidden" style="align-self:center">Gekopieerd — plak in je Worksheet.</span>
+    </div>
+    <table class="tt">
+      <thead><tr><th>Datum</th><th>Medewerker</th><th>Kaart</th><th class="num">Duur</th><th>Notitie</th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+</div>
+<script src="report.js"></script>
+</body>
+</html>
